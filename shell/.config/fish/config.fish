@@ -10,13 +10,18 @@ abbr -a vimdiff 'nvim -d'
 abbr -a ct 'cargo t'
 abbr -a amz 'env AWS_SECRET_ACCESS_KEY=(pass www/aws-secret-key | head -n1)'
 abbr -a ais "aws ec2 describe-instances | jq '.Reservations[] | .Instances[] | {iid: .InstanceId, type: .InstanceType, key:.KeyName, state:.State.Name, host:.PublicDnsName}'"
-abbr -a print 'lp -h cups.csail.mit.edu -d xerox9 -oDuplex=DuplexNoTumble -oStapleLocation=SinglePortrait'
 abbr -a gah 'git stash; and git pull --rebase; and git stash pop'
+abbr -a ks 'keybase chat send'
+abbr -a kr 'keybase chat read'
+abbr -a kl 'keybase chat list'
+abbr -a pr 'gh pr create -t (git show -s --format=%s HEAD) -b (git show -s --format=%B HEAD | tail -n+3)'
 complete --command aurman --wraps pacman
 
-set -U fish_user_paths /usr/local/sbin /usr/local/bin /usr/bin /bin
-
 if status --is-interactive
+	if test -d ~/dev/others/base16/templates/fish-shell
+		set fish_function_path $fish_function_path ~/dev/others/base16/templates/fish-shell/functions
+		builtin source ~/dev/others/base16/templates/fish-shell/conf.d/base16.fish
+	end
 	tmux ^ /dev/null; and exec true
 end
 
@@ -37,10 +42,6 @@ else
 	abbr -a l 'ls'
 	abbr -a ll 'ls -l'
 	abbr -a lll 'ls -la'
-end
-
-if [ -e /usr/share/fish/functions/fzf_key_bindings.fish ]; and status --is-interactive
-	source /usr/share/fish/functions/fzf_key_bindings.fish
 end
 
 if test -f /usr/share/autojump/autojump.fish;
@@ -67,6 +68,15 @@ function apass
 	asend (pass $argv[1] | head -n1)
 end
 
+function qrpass
+	if test (count $argv) -ne 1
+		pass $argv
+		return
+	end
+
+	qrsend (pass $argv[1] | head -n1)
+end
+
 function asend
 	if test (count $argv) -ne 1
 		echo "No argument given"
@@ -74,6 +84,15 @@ function asend
 	end
 
 	adb shell input text (echo $argv[1] | sed -e 's/ /%s/g' -e 's/\([[()<>{}$|;&*\\~"\'`]\)/\\\\\1/g')
+end
+
+function qrsend
+	if test (count $argv) -ne 1
+		echo "No argument given"
+		return
+	end
+
+	qrencode -o - $argv[1] | feh --geometry 500x500 --auto-zoom -
 end
 
 function limit
@@ -95,21 +114,18 @@ function remarkable
 		return
 	end
 
-	ip addr show up to 10.11.99.0/29 | grep enp0s20f0u2c2 >/dev/null
+	ip addr show up to 10.11.99.0/29 | grep enp2s0f0u3 >/dev/null
 	if test $status -ne 0
 		# not yet connected
 		echo "Connecting to reMarkable internal network"
-		sudo dhcpcd enp0s20f0u2c2
+		sudo dhcpcd enp2s0f0u3
 	end
 	for f in $argv
 		echo "-> uploading $f"
 		curl --form "file=@\""$f"\"" http://10.11.99.1/upload
 		echo
 	end
-end
-
-function athena
-	env SSHPASS=(pass www/mit) sshpass -e ssh athena $argv
+	sudo dhcpcd -k enp2s0f0u3
 end
 
 # Type - to move up to top parent dir which is a repository
@@ -138,11 +154,6 @@ setenv LESS_TERMCAP_se \e'[0m'           # end standout-mode
 setenv LESS_TERMCAP_so \e'[38;5;246m'    # begin standout-mode - info box
 setenv LESS_TERMCAP_ue \e'[0m'           # end underline
 setenv LESS_TERMCAP_us \e'[04;38;5;146m' # begin underline
-
-# For RLS
-# https://github.com/fish-shell/fish-shell/issues/2456
-setenv LD_LIBRARY_PATH (rustc +nightly --print sysroot)"/lib:$LD_LIBRARY_PATH"
-setenv RUST_SRC_PATH (rustc --print sysroot)"/lib/rustlib/src/rust/src"
 
 setenv FZF_DEFAULT_COMMAND 'fd --type file --follow'
 setenv FZF_CTRL_T_COMMAND 'fd --type file --follow'

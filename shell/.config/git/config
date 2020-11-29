@@ -7,7 +7,6 @@
 [color]
 	ui = true
 [core]
-	excludesfile = ~/.gitignore_global
 	autocrlf = input
 	safecrlf = true
 [merge]
@@ -18,11 +17,14 @@
 	st = status
 	lg = log --oneline
 	last = log -1 HEAD
+	cl = log -p -- ':(exclude)Cargo.lock'
 	f = push --force-with-lease
 	# https://stackoverflow.com/a/11688523/472927
 	ss = "!f() { git stash show stash^{/$*} -p; }; f"
 	sa = "!f() { git stash apply stash^{/$*}; }; f"
 	sl = stash list
+[pull]
+	ff = only
 [push]
 	default = simple
 [help]
@@ -45,3 +47,5 @@
 [sendemail]
 	smtpserver = /usr/bin/msmtp
 	annotate = yes
+[diff "odf"]
+	textconv = odt2txt
