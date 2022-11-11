@@ -1,13 +1,11 @@
 [user]
 	name = Jon Gjengset
 	email = jon@thesquareplanet.com
-	signingkey = BC86115038EA36D52CA1FFF1B4288F5A4A34220B
 [ui "color"]
 	ui = always
 [color]
 	ui = true
 [core]
-	excludesfile = ~/.gitignore_global
 	autocrlf = input
 	safecrlf = true
 [merge]
@@ -18,11 +16,14 @@
 	st = status
 	lg = log --oneline
 	last = log -1 HEAD
+	cl = log -p -- ':(exclude)Cargo.lock'
 	f = push --force-with-lease
 	# https://stackoverflow.com/a/11688523/472927
 	ss = "!f() { git stash show stash^{/$*} -p; }; f"
 	sa = "!f() { git stash apply stash^{/$*}; }; f"
 	sl = stash list
+[pull]
+	ff = only
 [push]
 	default = simple
 [help]
@@ -38,10 +39,17 @@
 [diff]
 	algorithm = patience
 	compactionHeuristic = true
-[commit]
-	gpgsign = true
 [protocol]
 	version = 2
 [sendemail]
 	smtpserver = /usr/bin/msmtp
 	annotate = yes
+[diff "odf"]
+	textconv = odt2txt
+[init]
+	defaultBranch = main
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process

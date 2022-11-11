@@ -5,6 +5,7 @@ abbr -a g git
 abbr -a gc 'git checkout'
 abbr -a vimdiff 'nvim -d'
 abbr -a ct 'cargo t'
+abbr -a vim 'nvim'
 complete --command aurman --wraps pacman
 
 if command -v aurman > /dev/null
@@ -55,10 +56,6 @@ if test -e ~/.cargo-target
 	setenv CARGO_TARGET_DIR ~/.cargo-target
 end
 set PATH $PATH ~/.cargo/bin
-
-# Fish should not add things to clipboard when killing
-# See https://github.com/fish-shell/fish-shell/issues/772
-set FISH_CLIPBOARD_CMD "cat"
 
 function fish_prompt
 	set_color brblack

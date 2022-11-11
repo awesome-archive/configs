@@ -9,6 +9,7 @@ set compose_format="-- Compose [~%lb, attachments: %a]%>~"
 set date_format="!%b %d, %Y at %I:%M%p %Z"
 set imap_idle
 set imap_check_subscribed
+set allow_ansi=yes
 unset imap_passive
 unset imap_peek
 set index_format="%3C %Z %{%b %d} %s %* (%L)"
@@ -23,7 +24,7 @@ set realname="Jon Gjengset";
 # set send_charset="us-ascii:iso-8859-1:utf-8"
 set send_charset="us-ascii:utf-8"
 set ssl_force_tls=yes
-set wrap=100
+set wrap=80
 set wait_key=no
 set mime_forward=no
 set mime_forward_rest=yes
@@ -119,7 +120,8 @@ subscribe getmail@lists.pyropus.ca gnuplot-beta@lists.sourceforge.net \
 	6.828-staff@pdos.csail.mit.edu 6828-staff@lists.csail.mit.edu \
 	pdos-students@csail.mit.edu pdos-students@lists.csail.mit.edu \
 	linux-perf-users@vger.kernel.org \
-	hacker-tools@mit.edu botc@lists.csail.mit.edu
+	hacker-tools@mit.edu botc@lists.csail.mit.edu \
+	missing-semester@mit.edu
 
 # aliases
 set alias_file=~/.mutt/aliases
